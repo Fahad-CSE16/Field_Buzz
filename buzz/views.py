@@ -1,8 +1,5 @@
 from django.shortcuts import redirect, render
-import requests
-import json
-import uuid
-import time
+import requests,json,uuid,time
 from .forms import SubmitForm
 from django.contrib import messages
 def payload(request):
@@ -21,6 +18,9 @@ def payload(request):
         id=uuid.uuid4()
         id2=uuid.uuid4()
         id2s=str(id2)
+        # tsync={}
+        # if not tsync[token]:
+        #     tsync[token]=str(id)
         form=SubmitForm(request.POST, request.FILES)
         url2= 'https://recruitment.fisdev.com/api/v0/recruiting-entities/'
         if form.is_valid():
@@ -47,9 +47,10 @@ def payload(request):
                 resp1=json.loads(api2.text)
             except:
                 resp1=None
+            print(resp1)
             if resp1:
-                cv_file2=resp1['cv_file']['id']
-            url3=f'https://recruitment.fisdev.com/api/file-object/{cv_file2}/'
+                file_token_id=resp1['cv_file']['id']
+            url3=f'https://recruitment.fisdev.com/api/file-object/{file_token_id}/'
             myfiles={'file': request.FILES['cv_file']}
             api3=requests.get(url3,files = myfiles,headers={'Authorization':f'token {token}','Content_type':'application/pdf'})
             try:

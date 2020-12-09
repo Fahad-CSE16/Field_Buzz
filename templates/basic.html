@@ -20,19 +20,15 @@
       aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
-       
-        <li class="nav-item">
-          <a class="nav-link" href="/login/">Login</a>
-        </li>
         <li class="nav-item">
           <a class="nav-link" href="/payload/">Payload</a>
         </li>
       </ul>
     </div>
   </nav>
+
   {% for message in messages %}
   <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
     {{message}}
@@ -40,7 +36,8 @@
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
-  {% endfor %} {% block body %} {% endblock body %}
+  {% endfor %}
+   {% block body %} {% endblock body %}
 
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
     integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
