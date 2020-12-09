@@ -18,9 +18,6 @@ def payload(request):
         id=uuid.uuid4()
         id2=uuid.uuid4()
         id2s=str(id2)
-        # tsync={}
-        # if not tsync[token]:
-        #     tsync[token]=str(id)
         form=SubmitForm(request.POST, request.FILES)
         url2= 'https://recruitment.fisdev.com/api/v0/recruiting-entities/'
         if form.is_valid():
