@@ -22,16 +22,13 @@ class SubmitForm(forms.Form):
     field_buzz_reference=forms.CharField(max_length=256,required=False)
     github_project_url =forms.URLField(max_length=512,required=True)
     cv_file=forms.FileField(widget=forms.FileInput(attrs={'accept':'application/pdf'}))
-    # def clean_cv_file(self):
-    #     print('any')
-    #     cv_file = self.cleaned_data.get('cv_file',True)
-    #     if cv_file:
-    #         print(os.path.getsize(cv_file))
-    #         if cv_file.size > 4*1024*1024:
-    #             raise ValidationError("File size is too large ( > 4mb )")
-    #         return cv_file
-    #     else:
-    #         raise ValidationError("Couldn't read uploaded image")
+    def clean_cv_file(self):
+        cv_file = self.cleaned_data.get('cv_file',True)
+        filesize= cv_file.size
+        if filesize > 4194304:
+            raise ValidationError("The maximum file size that can be uploaded is 4MB")
+        else:
+            return cv_file
 
 
 
