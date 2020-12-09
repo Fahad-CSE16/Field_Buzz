@@ -1,13 +1,10 @@
 from django import forms
-import os
- 
 from django.core.exceptions import ValidationError
 class SubmitForm(forms.Form):
     CATEGORY=[
-        ('Mobile','Mobile'),
         ('Backend','Backend'),
+        ('Mobile','Mobile'),
     ]
-    # CATEGORY=('teacher','student')
     name=forms.CharField(max_length=256,required=True)
     email=forms.EmailField(required=True)
     phone=forms.CharField(max_length=14,required=True)
