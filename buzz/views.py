@@ -2,6 +2,7 @@ from django.shortcuts import redirect, render
 import requests,json,uuid,time
 from .forms import SubmitForm
 from django.contrib import messages
+from .models import Entity
 def payload(request):
     if request.method=="POST":
         url='https://recruitment.fisdev.com/api/login/'
@@ -11,18 +12,29 @@ def payload(request):
             resp=json.loads(api.text)
         except:
             resp=None
-        if resp:
-            token=resp['token']
-        millis = int(round(time.time() * 1000))
-
         id=uuid.uuid4()
         id2=uuid.uuid4()
         id2s=str(id2)
+        millis = int(round(time.time() * 1000))
+        if resp:
+            token=resp['token']
+            if Entity.objects.filter(token=token).exists():
+                entity=Entity.objects.get(token=token)
+            else:
+                entity=Entity(token=token,time=millis, tsync_id=str(id))
+                entity.save()
+        else:
+            messages.error(request,'Could not logged in' )
+            return redirect('home')
+        
+
+
+        
         form=SubmitForm(request.POST, request.FILES)
-        url2= 'https://recruitment.fisdev.com/api/v0/recruiting-entities/'
+        url2= 'https://recruitment.fisdev.com/api/v1/recruiting-entities/'
         if form.is_valid():
             jsons2={
-                "tsync_id":str(id),
+                "tsync_id":entity.tsync_id,
                 "name":form.data['name'],
                 "email":form.data['email'],
                 "phone":form.data['phone'],
@@ -38,13 +50,13 @@ def payload(request):
                 "github_project_url":form.data['github_project_url'],
                 "cv_file":{"tsync_id":id2s},
                 "on_spot_update_time":millis,
+                "on_spot_creation_time":entity.time,
             }
             api2=requests.post(url2,json=jsons2,headers={'Authorization':f'token {token}'})
             try:
                 resp1=json.loads(api2.text)
             except:
                 resp1=None
-            print(resp1)
             if resp1:
                 file_token_id=resp1['cv_file']['id']
             url3=f'https://recruitment.fisdev.com/api/file-object/{file_token_id}/'
